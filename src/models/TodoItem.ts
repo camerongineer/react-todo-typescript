@@ -1,9 +1,9 @@
 export class TodoItem {
-    private static todoID: number = 0
+    private static todoID: number = 0;
     private readonly _id: number;
     private _title: string;
     
-    constructor(
+    constructor (
         title: string,
         id?: number
     ) {
@@ -11,15 +11,15 @@ export class TodoItem {
         this._id = id ? id : Date.now() - ++TodoItem.todoID;
     }
     
-    get id(): number {
+    get id (): number {
         return this._id;
     }
-
-    get title(): string {
+    
+    get title (): string {
         return this._title;
     }
-
-    set title(value: string) {
+    
+    set title (value: string) {
         this._title = value;
     }
 }

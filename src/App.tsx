@@ -8,7 +8,7 @@ import AddTodoForm from "./AddTodoForm";
 const App: React.FC = () => {
     const [todoList, setTodoList] = useState<TodoItem[]>(buildList(LIST_TITLES));
     
-    const addTodo = (newTodo: TodoItem) => setTodoList([...todoList, newTodo])
+    const addTodo = (newTodo: TodoItem) => setTodoList(prevTodoList => [...prevTodoList, newTodo]);
     
     return (
         <div>

@@ -8,7 +8,7 @@ export class TodoItem {
         id?: number
     ) {
         this._title = title;
-        this._id = id ? id : Date.now() - ++TodoItem.todoID;
+        this._id = id ? id : Date.now() - (++TodoItem.todoID * 10);
     }
     
     get id (): number {

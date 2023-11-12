@@ -4,11 +4,12 @@ import TodoListItem from "./TodoListItem";
 
 interface TodoListProps {
     todoList: TodoItem[];
+    onRemoveTodo: (todoItemId: number) => void;
 }
 
-const TodoList: React.FC<TodoListProps> = ({ todoList }) => (
+const TodoList: React.FC<TodoListProps> = ({ todoList, onRemoveTodo }) => (
     <ul>
-        {todoList.map(item => <TodoListItem key={item.id} todoItem={item}/>)}
+        {todoList.map(item => <TodoListItem key={item.id} todoItem={item} onRemoveClicked={onRemoveTodo}/>)}
     </ul>
 );
 

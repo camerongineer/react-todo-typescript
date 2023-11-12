@@ -5,7 +5,9 @@ import AddTodoForm from "./AddTodoForm";
 import { loadList } from "./utils/listUtils";
 
 const useSemiPersistentState = (
-    key: string, initialValue: TodoItem[]): [TodoItem[], Dispatch<SetStateAction<TodoItem[]>>] => {
+    key: string,
+    initialValue: TodoItem[]
+): [TodoItem[], Dispatch<SetStateAction<TodoItem[]>>] => {
     const savedData = localStorage.getItem(key);
     const parsedData = savedData ? JSON.parse(savedData) : null;
     const [value, setValue] = useState<TodoItem[]>(loadList(parsedData) || initialValue);
@@ -21,12 +23,15 @@ const App: React.FC = () => {
     const [todoList, setTodoList] = useSemiPersistentState("savedTodoList", []);
     
     const addTodo = (newTodo: TodoItem) => setTodoList(prevTodoList => [...prevTodoList, newTodo]);
+    const removeTodo = (todoItemId: number) => setTodoList(
+        prevTodoList => prevTodoList.filter(item => item.id !== todoItemId)
+    );
     
     return (
         <>
             <h1>Todo List</h1>
             <AddTodoForm onAddTodo={addTodo}/>
-            <TodoList todoList={todoList}/>
+            <TodoList todoList={todoList} onRemoveTodo={removeTodo}/>
         </>
     );
 };

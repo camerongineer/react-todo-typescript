@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { TodoItem } from "./models/TodoItem";
+import InputWithLabel from "./InputWithLabel";
 
 const FORM_ID: string = "todoForm";
 const TITLE_ID: string = "todoTitle";
@@ -24,9 +25,12 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
     
     return (
         <form id={FORM_ID} onSubmit={handleAddTodo}>
-            <label htmlFor={TITLE_ID}>Title:&nbsp;
-                <input id={TITLE_ID} name="title" value={todoTitle} onChange={handleTitleChange}/>
-            </label>
+            <InputWithLabel inputId={TITLE_ID}
+                            inputValue={todoTitle}
+                            isFocused
+                            onInputChange={handleTitleChange}>
+                <strong>Title</strong>
+            </InputWithLabel>
             <button type="submit">Add</button>
         </form>
     );

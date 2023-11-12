@@ -19,7 +19,11 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
     
     const handleAddTodo = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        onAddTodo(new TodoItem(todoTitle, Date.now()));
+        if (todoTitle.trim()) {
+            onAddTodo(new TodoItem(todoTitle, Date.now()));
+        } else {
+            alert("Please enter a todo title");
+        }
         setTodoTitle("");
     };
     
@@ -29,7 +33,7 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
                             inputValue={todoTitle}
                             isFocused
                             onInputChange={handleTitleChange}>
-                <strong>Title</strong>
+                <strong>Title:</strong>
             </InputWithLabel>
             <button type="submit">Add</button>
         </form>

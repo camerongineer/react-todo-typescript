@@ -9,24 +9,25 @@ const App: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     
     useEffect(() => {
-        new Promise(resolve => {
-            setTimeout(() => {
-                const savedData = localStorage.getItem("savedTodoList");
-                const parsedData = savedData ? JSON.parse(savedData) : null;
-                resolve({ data: { todoList: loadList(parsedData) ?? [] } });
-            }, 1000);
-        }).then(result => {
-            // @ts-ignore
+        const fetchData = async () => {
+            const savedData = localStorage.getItem("savedTodoList");
+            const parsedData = savedData ? JSON.parse(savedData) : null;
+            const result = await new Promise<{ data: { todoList: TodoItem[] } }>(resolve => {
+                setTimeout(() => {
+                    resolve({ data: { todoList: loadList(parsedData) ?? [] } });
+                }, 1000);
+            });
             setTodoList(result.data.todoList);
             setIsLoading(false);
-        });
+        };
+        fetchData().catch(err => console.error(err));
     }, []);
     
     useEffect(() => {
         if (!isLoading) {
             localStorage.setItem("savedTodoList", JSON.stringify(todoList));
         }
-    }, [todoList]);
+    }, [isLoading, todoList]);
     
     const addTodo = (newTodo: TodoItem) => setTodoList(prevTodoList => [...prevTodoList, newTodo]);
     const removeTodo = (todoItemId: number) => setTodoList(

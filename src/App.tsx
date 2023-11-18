@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useReducer } from "react";
 import TodoList from "./TodoList";
 import { TodoItem } from "./models/TodoItem";
 import AddTodoForm from "./AddTodoForm";
 import { loadList } from "./utils/listUtils";
+import { initialState, todoReducer } from "./todoReducer";
 
 const App: React.FC = () => {
-    const [todoList, setTodoList] = useState<TodoItem[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [state, dispatch] = useReducer(todoReducer, initialState);
     
     useEffect(() => {
+        dispatch({ type: "TODO_LIST_FETCH_INIT" });
         const fetchData = async () => {
             const savedData = localStorage.getItem("savedTodoList");
             const parsedData = savedData ? JSON.parse(savedData) : null;
@@ -17,31 +18,28 @@ const App: React.FC = () => {
                     resolve({ data: { todoList: loadList(parsedData) ?? [] } });
                 }, 1000);
             });
-            setTodoList(result.data.todoList);
-            setIsLoading(false);
+            dispatch({ type: "TODO_LIST_FETCH_SUCCESS", payload: result.data.todoList });
         };
         fetchData().catch(err => console.error(err));
     }, []);
     
     useEffect(() => {
-        if (!isLoading) {
-            localStorage.setItem("savedTodoList", JSON.stringify(todoList));
+        if (!state.isLoading) {
+            localStorage.setItem("savedTodoList", JSON.stringify(state.todoList));
         }
-    }, [isLoading, todoList]);
+    }, [state.isLoading, state.todoList]);
     
-    const addTodo = (newTodo: TodoItem) => setTodoList(prevTodoList => [...prevTodoList, newTodo]);
-    const removeTodo = (todoItemId: number) => setTodoList(
-        prevTodoList => prevTodoList.filter(item => item.id !== todoItemId)
-    );
+    const addTodo = (newTodo: TodoItem) => dispatch({ type: "ADD_TODO", payload: newTodo });
+    const removeTodo = (todoItemId: number) => dispatch({ type: "REMOVE_TODO", payload: todoItemId });
     
     return (
         <>
             <h1>Todo List</h1>
             <AddTodoForm onAddTodo={addTodo}/>
-            {isLoading ? (
+            {state.isLoading ? (
                 <p>Loading...</p>
             ) : (
-                <TodoList todoList={todoList} onRemoveTodo={removeTodo}/>
+                <TodoList todoList={state.todoList} onRemoveTodo={removeTodo}/>
             )}
         </>
     );

@@ -4,6 +4,7 @@ import { TodoItem } from "./models/TodoItem";
 import AddTodoForm from "./AddTodoForm";
 import { loadList } from "./utils/listUtils";
 import { initialState, todoReducer } from "./todoReducer";
+import { fetchItems } from "./api";
 
 const App: React.FC = () => {
     const [state, dispatch] = useReducer(todoReducer, initialState);
@@ -11,14 +12,9 @@ const App: React.FC = () => {
     useEffect(() => {
         dispatch({ type: "TODO_LIST_FETCH_INIT" });
         const fetchData = async () => {
-            const savedData = localStorage.getItem("savedTodoList");
-            const parsedData = savedData ? JSON.parse(savedData) : null;
-            const result = await new Promise<{ data: { todoList: TodoItem[] } }>(resolve => {
-                setTimeout(() => {
-                    resolve({ data: { todoList: loadList(parsedData) ?? [] } });
-                }, 1000);
-            });
-            dispatch({ type: "TODO_LIST_FETCH_SUCCESS", payload: result.data.todoList });
+            const response = await fetchItems();
+            const savedData = response.data ? loadList(response.data) : []
+            dispatch({ type: "TODO_LIST_FETCH_SUCCESS", payload: savedData });
         };
         fetchData().catch(err => console.error(err));
     }, []);

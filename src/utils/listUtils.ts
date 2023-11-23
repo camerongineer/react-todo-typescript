@@ -1,15 +1,15 @@
 import { TodoItem } from "../models/TodoItem";
 
-export const loadList = (loadedData: object[] | null): TodoItem[] | null => {
+export const loadList = (loadedData: object[] | null): TodoItem[] => {
     if (loadedData === null) {
-        return null;
+        return [];
     }
     const todoList: TodoItem[] = [];
     loadedData.forEach((obj: any) => {
-        if (obj.hasOwnProperty("_title")) {
-            todoList.push(new TodoItem(obj["_title"], obj["_id"]));
+        if (obj.hasOwnProperty("fields")) {
+            todoList.push(new TodoItem(obj["fields"]["title"], obj["id"]));
         } else {
-            return null;
+            return [];
         }
     });
     return todoList;

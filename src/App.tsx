@@ -19,12 +19,6 @@ const App: React.FC = () => {
         fetchData().catch(err => console.error(err));
     }, []);
     
-    useEffect(() => {
-        if (!state.isLoading) {
-            localStorage.setItem("savedTodoList", JSON.stringify(state.todoList));
-        }
-    }, [state.isLoading, state.todoList]);
-    
     const addTodo = async (newTodoTitle: string) => {
         try {
             const response = await addItem(newTodoTitle);

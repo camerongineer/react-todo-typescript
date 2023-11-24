@@ -8,7 +8,7 @@ const AIRTABLE_URL = "https://api.airtable.com/v0";
 const BASE_ID = process.env.AIRTABLE_BASE_ID;
 const AIRTABLE_TABLE_NAME = "todolist";
 const SORT_BY_LAST_MODIFIED_TIME = "?sort%5B0%5D%5Bfield%5D=lastModifiedTime&sort%5B0%5D%5Bdirection%5D=asc";
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 const fullUrl = `${AIRTABLE_URL}/${BASE_ID}/${AIRTABLE_TABLE_NAME}${SORT_BY_LAST_MODIFIED_TIME}`;
 

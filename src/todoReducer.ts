@@ -19,17 +19,17 @@ interface TodoListLoadedAction {
     payload: TodoItem[];
 }
 
-interface AddTodoAction {
-    type: "ADD_TODO";
+interface AddTodoSuccessAction {
+    type: "ADD_TODO_SUCCESS";
     payload: TodoItem;
 }
 
-interface RemoveTodoAction {
-    type: "REMOVE_TODO";
-    payload: number;
+interface RemoveTodoSuccessAction {
+    type: "REMOVE_TODO_SUCCESS";
+    payload: string;
 }
 
-type Action = InitTodoListAction | TodoListLoadedAction | AddTodoAction | RemoveTodoAction;
+type Action = InitTodoListAction | TodoListLoadedAction | AddTodoSuccessAction | RemoveTodoSuccessAction;
 
 const todoReducer = (state: TodoState, action: Action) => {
     switch (action.type) {
@@ -37,11 +37,12 @@ const todoReducer = (state: TodoState, action: Action) => {
             return { ...state, isLoading: true };
         case "TODO_LIST_FETCH_SUCCESS":
             return { ...state, todoList: action.payload, isLoading: false };
-        case "ADD_TODO":
+        case "ADD_TODO_SUCCESS":
             return { ...state, todoList: [...state.todoList, action.payload] };
-        case "REMOVE_TODO":
+        case "REMOVE_TODO_SUCCESS": {
             const newTodoList = state.todoList.filter(todo => todo.id !== action.payload);
-            return { ...state, todoList: newTodoList };
+            return { ...state, todoList: newTodoList, isLoading: false };
+        }
         default:
             throw new Error("Invalid Todo Action");
     }

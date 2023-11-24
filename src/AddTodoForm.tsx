@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { TodoItem } from "./models/TodoItem";
 import InputWithLabel from "./InputWithLabel";
 
 const FORM_ID: string = "todoForm";
 const TITLE_ID: string = "todoTitle";
 
 interface AddTodoFormProps {
-    onAddTodo: (todoTitle: TodoItem) => void;
+    onAddTodo: (todoTitle: string) => void;
 }
 
 const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
@@ -20,7 +19,7 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
     const handleAddTodo = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (todoTitle.trim()) {
-            onAddTodo(new TodoItem(todoTitle, Date.now()));
+            onAddTodo(todoTitle);
         } else {
             alert("Please enter a todo title");
         }

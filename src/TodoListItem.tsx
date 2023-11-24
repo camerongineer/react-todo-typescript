@@ -3,7 +3,7 @@ import { TodoItem } from "./models/TodoItem";
 
 interface TodoListItemProps {
     todoItem: TodoItem;
-    onRemoveClicked: (todoItemId: number) => void;
+    onRemoveClicked: (todoItemId: string) => void;
 }
 
 const TodoListItem: React.FC<TodoListItemProps> = ({ todoItem, onRemoveClicked }) =>

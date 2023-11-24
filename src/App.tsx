@@ -4,7 +4,7 @@ import { TodoItem } from "./models/TodoItem";
 import AddTodoForm from "./AddTodoForm";
 import { loadList } from "./utils/listUtils";
 import { initialState, todoReducer } from "./todoReducer";
-import { fetchItems } from "./api";
+import { addItem, deleteItem, fetchItems } from "./api";
 
 const App: React.FC = () => {
     const [state, dispatch] = useReducer(todoReducer, initialState);
@@ -13,7 +13,7 @@ const App: React.FC = () => {
         dispatch({ type: "TODO_LIST_FETCH_INIT" });
         const fetchData = async () => {
             const response = await fetchItems();
-            const savedData = response.data ? loadList(response.data) : []
+            const savedData = response.data ? loadList(response.data) : [];
             dispatch({ type: "TODO_LIST_FETCH_SUCCESS", payload: savedData });
         };
         fetchData().catch(err => console.error(err));
@@ -25,8 +25,24 @@ const App: React.FC = () => {
         }
     }, [state.isLoading, state.todoList]);
     
-    const addTodo = (newTodo: TodoItem) => dispatch({ type: "ADD_TODO", payload: newTodo });
-    const removeTodo = (todoItemId: number) => dispatch({ type: "REMOVE_TODO", payload: todoItemId });
+    const addTodo = async (newTodoTitle: string) => {
+        try {
+            const response = await addItem(newTodoTitle);
+            const newTodo = new TodoItem(newTodoTitle, response.data.id);
+            dispatch({ type: "ADD_TODO_SUCCESS", payload: newTodo });
+        } catch {
+            console.error("Something went wrong...");
+        }
+    };
+    const removeTodo = async (todoItemId: string) => {
+        try {
+            await deleteItem(todoItemId);
+            dispatch({ type: "REMOVE_TODO_SUCCESS", payload: todoItemId });
+        } catch {
+            console.error("Something went wrong...");
+        }
+        
+    };
     
     return (
         <>

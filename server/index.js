@@ -1,8 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
-const index = express();
-require("dotenv").config();
+const path = require("path");
+const app = express();
+require("dotenv")
+    .config();
 
 const AIRTABLE_URL = "https://api.airtable.com/v0";
 const BASE_ID = process.env.AIRTABLE_BASE_ID;
@@ -12,32 +14,43 @@ const PORT = process.env.PORT || 5000;
 
 const fullUrl = `${AIRTABLE_URL}/${BASE_ID}/${AIRTABLE_TABLE_NAME}${SORT_BY_LAST_MODIFIED_TIME}`;
 
-index.use(express.json());
-index.use(cors());
-index.listen(PORT, () => {
+app.use(express.json());
+app.use(cors());
+
+app.use(express.static(path.join(__dirname, "../src/build")));
+
+app.listen(PORT, () => {
     console.log("Server Listening on PORT:", PORT);
 });
 
-index.get("/status", (request, response) => {
+app.get("/status", (request, response) => {
     const status = {
         "Status": "Running"
     };
     response.send(status);
 });
 
-index.get("/items", (request, response) => {
+app.get("/items", (request, response) => {
     axios.get(fullUrl, {
-        headers: {
-            "Authorization": `Bearer ${process.env.AIRTABLE_API_KEY}`
-        }
-    }).then(res => response.send(res.data["records"] ?? [])).catch(err => console.log(err));
+            headers: {
+                "Authorization": `Bearer ${process.env.AIRTABLE_API_KEY}`
+            }
+        })
+        .then(res => response.send(res.data["records"] ?? []))
+        .catch(err => console.log(err));
 });
 
-index.post("/items", (request, response) => {
+app.post("/items", (request, response) => {
     axios.post(fullUrl, request.body, {
-        headers: {
-            "Authorization": `Bearer ${process.env.AIRTABLE_API_KEY}`,
-            "Content-Type": "application/json"
-        }
-    }).then(res => response.send(res.data)).catch(err => console.log(err));
+            headers: {
+                "Authorization": `Bearer ${process.env.AIRTABLE_API_KEY}`,
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => response.send(res.data))
+        .catch(err => console.log(err));
+});
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../src/build/index.html"));
 });

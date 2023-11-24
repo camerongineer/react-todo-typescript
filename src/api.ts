@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const fetchItems = () => axios.get("http://localhost:5000/items");
+const fetchItems = () => axios.get("/api/items");
 
 export {
     fetchItems
